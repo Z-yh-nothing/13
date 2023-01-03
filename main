@@ -1,0 +1,404 @@
+#include <iostream>
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+//#include"data_base.h"
+//#include"action.h"
+
+/* run this program using the console pauser or add your own getch, system("pause") or input loop */
+
+typedef struct count{
+char name[10];//姓名
+char sex[5];//性别
+char id[19];//身份证号
+char card[20];//银行卡号 
+char tel[12];//联系电话
+char password[6];//密码
+double balance;//账户余额
+int state;//账户状态，0表示正常,1表示冻结
+}count;
+
+
+typedef struct LNode{
+struct count data;//银行信息结构体
+struct LNode* next;//指向下一元素指针
+}LNode,*LinkList;
+
+
+
+LinkList CreateList_H() {
+	LinkList L = (LinkList)malloc(sizeof(LNode));//建立一个带头结点的空链表
+	strcpy(L->data.name,"1");
+	strcpy(L->data.sex,"1");
+	strcpy(L->data.id,"1");
+	strcpy(L->data.card,"1");
+	strcpy(L ->data.tel,"1");
+	strcpy(L->data.password,"1");
+    L->data.balance = 1;
+    L->data.state = 0;
+//	LinkList r;
+	L->next = NULL;
+/*	if (L == NULL)//判断是否建立成功
+	{
+		perror("CreateList_H");
+		return 0;
+	}
+	L->next = NULL;
+	r = L;//尾指正r指向头结点
+	while (n)
+	{
+		LinkList p = (LinkList)malloc(sizeof(LNode));//生成新节点p
+		if (p == NULL)//判断是否建立成功
+		{
+			perror("CreateList_H");
+			return 0;
+		}
+		scanf("%s %s %s %s %s %s %lf %d", p->data.name, p->data.sex, p->data.id, p->data.card,p->data.tel, p->data.password, &(p->data.balance), &(p->data.state));//输入账户的信息赋给p结点上的data
+		r->next = p;//r指向的结点next域指向p
+		p->next = NULL;//p结点next域指针赋为空指针
+		r = p;//r指针指向新节点
+		n--;
+	}*/
+	return L;//返回头指针L
+}
+
+
+
+
+
+//管理员查询储户信息 
+LinkList ownersearch(LinkList L) {
+	char seek[20]="0";
+	authcode();//人机验证 
+	int flag=authcode();
+	while(flag==1)
+	{
+		printf("请输入需要查找的用户银行卡号：\n");
+		scanf("%s",seek); 
+		LinkList p = L ;//创建p指针指向L首结点
+		while (NULL != p && strcmp(p->data.card, seek))//依次向后扫描，直到p为空或p指针指向的账户银行卡号相同
+		{
+			p = p->next;//p指向下一个结点
+		}
+		if(p ==NULL)
+		{
+			printf("未查询到相关用户信息。\n"); 
+		}
+	//	printf("%s %s %s %s %s %lf %d", p->data.name, p->data.sex, p->data.id, p->data.tel, p->data.card, p->data.balance, p->data.state);//打印用户信息 
+	//	printf("\n");
+		return p;
+	}
+}
+
+//储户查询个人信息 
+LinkList usersearch(LinkList L)
+{
+	int flag=authcode();
+	while(flag==1)
+	{
+		char seek1[20]="0";
+		char seek2[20]="0"; 
+		printf("请输入需要查找的用户银行卡号：\n");
+		scanf("%s",seek1);
+		printf("请输入用户密码：\n"); 
+		scanf("%s",seek2); 
+		LinkList p = L;//创建p指针指向L首结点
+		while (NULL != p && strcmp(p->data.card, seek1) && strcmp(p->data.password, seek2))//依次向后扫描，直到p为空或p指针指向的账户身份证号以及账户的密码/*  */相同
+		{
+			p = p->next;//p指向下一个结点
+		}
+		if(p ==NULL)
+		{
+			printf("未查询到相关用户信息。");
+		}
+		else
+	//	printf("%s %s %s %s %s %lf %d", p->data.name, p->data.sex, p->data.id, p->data.tel, p->data.card, p->data.balance, p->data.state);
+	//	printf("\n");
+		return p;
+	}
+}
+
+
+int ownermenu_choose(){
+	int choose;
+	printf("欢迎使用，请选择您要做出的操作\n");
+	printf("1.查询账户  2.冻结账户\n");
+	printf("3.注销账户  4.新建账户\n");
+	printf("5.退出\n");
+	scanf("%d",&choose);
+	while(choose < 1 || choose > 5){
+		printf("输入有误，请重新输入");
+		scanf("%d",&choose);
+	}
+	return choose;
+}
+
+
+
+int usermenu_choose(){
+	int choose;
+	printf("欢迎使用，请选择您要做出的操作\n");
+	printf("1.查询账户  2.修改信息\n");
+	printf("3.注销账户  4.新建账户\n");
+	printf("5.存入      6.支出\n");
+	printf("7.退出\n");
+	scanf("%d",&choose);
+	while(choose < 1 || choose > 7){
+		printf("输入有误，请重新输入");
+		scanf("%d",&choose);
+	}
+	return choose; 
+}
+
+
+//开户
+void add(LinkList L){
+	int flag=authcode();
+	if(flag==1)
+	{
+		int k;
+		LinkList p=L;
+		LinkList s=(LinkList)malloc(sizeof(LNode));
+		printf("请输入身份证号：");
+		scanf("%s",s->data.id);
+		printf("请输入姓名：");
+		scanf("%s",s->data.name);
+		printf("请输入性别：男/女\n");
+		scanf("%s",s->data.sex); 
+		printf("请输入联系电话：");
+		scanf("%s",s->data.tel); 
+		printf("请输入密码：");
+		scanf("%s",s->data.password);
+		int i;
+		for(i = 0;i <= 19;i ++){
+			s->data.card[i] = 48 + rand()%10;
+		}
+		/*rand();
+		strcpy(s->data.card,"0123456789000");
+		strcat(s->data.card,C);*/
+		s->data.balance=0; //初始余额为0 
+		p->data.state=0; //初始状态为0，即正常 
+		printf("是否确定创建用户：1.确定 2.取消\n");
+		printf("请输入选项：\n");
+		scanf("%d",&k);
+		if(k==1)
+		{
+			s->next=p->next;
+			p->next=s;
+			printf("创建成功!您的账户银行卡号是：%s\n",s->data.card); 
+		}
+		else
+		{
+			free(s);
+			printf("取消创建!\n");
+		}				
+	}
+}
+
+
+
+void lock(LNode *p){
+	p->data.state = 1;
+	printf("冻结成功\n");
+}
+
+void ownercheck(LNode *p){
+	printf("姓名：%s 性别：%s 身份证号：%s\n银行卡号：%s 联系电话：%s 余额：%0.2lf 账户状态：%d\n",p->data.name,p->data.sex,p->data.id,p->data.card,p->data.tel,p->data.card, p->data.balance, p->data.state); 
+}
+
+void usercheck(LNode *p){
+	printf("姓名：%s 性别：%s 身份证号：%s\n银行卡号：%s 联系电话：%s 密码：%s 余额：%0.2lf 账户状态：%d\n",p->data.name,p->data.sex,p->data.id,p->data.card,p->data.tel,p->data.password,p->data.card, p->data.balance, p->data.state); 
+}
+
+
+
+//销户 
+void del(LinkList L,LNode *p){
+	int flag=authcode();
+	if(flag==1)
+	{
+            while(L->next != p){
+            	L = L->next;
+			}
+			L->next = p -> next;
+			p = NULL;
+			printf("销户成功！\n");
+	}
+}
+
+
+//管理员修改用户手机号或者密码 
+void alter(LNode *p){
+	int flag=authcode();
+	int k;
+	if(flag==1)
+	{
+		
+			printf("1.修改手机号 2.修改密码\n");
+			printf("请选择需要进行的操作：\n");
+			scanf("%d",&k);
+			if(k==1) 
+			{
+				printf("请输入您要绑定的手机号码：\n");
+				scanf("%s",p->data.tel);//修改手机号 
+				printf("手机号修改成功！\n");
+			}
+			else
+			{
+				printf("请输入您的新密码：\n");
+				scanf("%s",p->data.password); 
+				printf("密码修改成功！\n");
+			}
+		
+	}
+}
+
+
+//存款 
+void save_money(LNode *p){
+	int flag=authcode();
+	if(flag==1)
+	{
+			printf("请输入存款金额:\n");
+			double savemoney;
+			scanf("%lf",&savemoney);
+			p->data.balance+=savemoney;
+			printf("已存款%0.2lf元\n余额为%0.2lf元\n",savemoney,p->data.balance); 
+		
+	}
+} 
+
+
+
+//取款 
+void get_money(LNode *p){
+	int flag=authcode();
+	if(flag==1)
+	{
+			printf("请输入取款金额:\n");
+			int k; 
+			double getmoney;
+			scanf("%lf",&getmoney);
+			while(getmoney>p->data.balance)
+			{
+				printf("余额不足，请重新选择！\n");
+				printf("1.重新输入金额 2.取消取款\n");
+				printf("请输入选项：\n");
+				scanf("%d",&k);
+				if(k==1)
+				{
+					printf("请输入金额：");
+					scanf("%lf",&getmoney);
+				}
+				else{
+					break;
+				}
+			}
+			if(getmoney<=p->data.balance){
+					p->data.balance-=getmoney;
+			        printf("已取款%0.2lf元\n余额为%0.2lf元\n",getmoney,p->data.balance); 
+			}
+		
+		
+	}
+}
+
+
+
+
+
+
+
+
+int main(int argc, char** argv) {
+//	int n;
+//	printf("请输入建立账户数目，并依次输入账户相关信息名字，性别，身份证号，银行卡号，联系电话，密码，余额，账户状态\n");
+//	scanf("%d",&n);
+	LinkList L = CreateList_H();//建立n个元素的链表，正序输入账户的信息，返回头指针L
+	printf("初始账户姓名：1 性别：1 身份证号：1\n银行卡号：1 联系电话：1 余额：1 账户状态：0\n");
+	int id;
+	printf("请选择身份");
+	printf("1.管理员 2.储户\n");
+	scanf("%d",&id);
+	if(id == 1){//管理员 
+		int choose;
+		choose = ownermenu_choose();//返回管理员所选择的操作 
+		LNode *p;
+		while(choose != 5){
+			switch(choose){
+				case 1:case 2:case 3:
+		            p = ownersearch(L);//查找到相应账户 
+		            if(p ==NULL)
+		{
+			return 0; 
+		}
+		            break;	
+		        case 4:
+		    	    add(L);
+		    	    break;
+		    }
+		    switch(choose){
+		    	case 1:
+		    		ownercheck(p);
+				    break;
+			    case 2:
+				    lock(p);
+			    	break;
+			    case 3:
+				    del(L,p);
+				    break;
+			    case 4:
+				    break;
+		   }
+		   choose = ownermenu_choose();
+		}
+		
+		return 0;
+	}
+	else if(id == 2){//储户 
+		int choose;
+		choose = usermenu_choose();//返回储户选择的操作
+		LNode *p;
+		while(choose != 7){
+			switch(choose){
+				case 1:case 2:case 3:case 5:case 6:
+		            p = usersearch(L);//查找到相应账户 
+		            if(p->data.state == 1){
+		            	printf("对不起，您的账户已被冻结");
+		            	return 0;
+					}
+		           break;	
+		        case 4:
+		    	   add(L);
+		    	   break;
+		    } 
+		    switch(choose){
+			    case 1:
+				   usercheck(p);
+				   break;
+			    case 2:
+				   alter(p);
+				   break;
+			    case 3:
+			       del(L,p);
+				   break;
+			    case 4:
+				   break;
+			    case 5:
+				   save_money(p);
+				   break;
+			    case 6:
+				   get_money(p);
+				   break;
+		   }
+		   choose = usermenu_choose();
+		}
+		
+		return 0; 
+	}
+	else{
+		printf("输入有误，请选择1或2");
+		return 0;
+	}
+}
