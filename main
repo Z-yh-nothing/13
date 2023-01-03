@@ -2,7 +2,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#include<ctime>
+
 //#include"data_base.h"
 //#include"action.h"
 
