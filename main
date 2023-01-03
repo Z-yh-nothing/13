@@ -65,7 +65,37 @@ LinkList CreateList_H() {
 
 
 
-
+//人机验证 
+int authcode()
+{
+    int a,flag,num1,num2;
+    long s;
+    char c;
+    unsigned long n;
+     srand((unsigned)time(NULL));
+     num1=rand()%10+1;
+     num2=rand()%10+1;
+     n=rand()%3;
+     switch(n)
+     {
+        case 0:c='+';s=num1+num2;break;
+        case 1:c='-';s=num1-num2;break;
+        default:c='*';s=num1*num2;
+     }
+     printf("请输入验证码:%d%c%d\n",num1,c,num2);
+     scanf("%d",&a);
+     while(a != s){
+     	flag=-1;
+     	 printf("验证码错误，请重新输入！\n");
+     	scanf("%d",&a);
+     	
+	 }
+     if(a==s)
+         {
+		 flag=1;
+		}
+    return flag;
+}
 
 //管理员查询储户信息 
 LinkList ownersearch(LinkList L) {
